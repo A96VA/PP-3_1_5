@@ -8,19 +8,23 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import ru.kata.spring.boot_security.demo.service.UserServiceImplem;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
+
 
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    final UserServiceImplem userService;
+    final UserService userService;
+    final RoleService roleService;
     final SuccessUserHandler loginSuccessHandler;
 
     @Autowired
-    public WebSecurityConfig(UserServiceImplem userService, SuccessUserHandler successUserHandler) {
+    public WebSecurityConfig(UserService userService, RoleService roleService, SuccessUserHandler successUserHandler) {
         this.userService = userService;
+        this.roleService = roleService;
         this.loginSuccessHandler = successUserHandler;
     }
 
@@ -29,7 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/admin/**", "/", "/admin").hasRole("ADMIN")
+//                .antMatchers("/api/**").permitAll()
+                .antMatchers("/users/**", "/", "/users").hasRole("ADMIN")
                 .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()

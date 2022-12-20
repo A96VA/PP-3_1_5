@@ -8,11 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.UserServiceImplem;
-import java.security.Principal;
 
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/users")
 public class AdminController {
 
     private final UserServiceImplem userService;
@@ -26,7 +25,7 @@ public class AdminController {
     @GetMapping()
     public String getAllUsers(Model model) {
 
-        model.addAttribute("admins", userService.listUsers());
+        model.addAttribute("admins", userService.setUsers());
         model.addAttribute("listRoles", userService.listRoles());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userA = (User) authentication.getPrincipal();
@@ -34,7 +33,7 @@ public class AdminController {
         model.addAttribute("userA", userA);
         model.addAttribute("userU", userU);
 
-        return "admins";
+        return "users";
     }
 
     @GetMapping( "/new")
